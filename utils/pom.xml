@@ -21,10 +21,67 @@
         <springboot.version>1.5.2.RELEASE</springboot.version>
         <lombok.version>1.16.6</lombok.version>
         <protobuf.version>3.4.0</protobuf.version>
-
+        <!--infoboard-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+        <junit.version>4.11</junit.version>
+        <slf4j.version>1.7.5</slf4j.version>
+        <jetty.version>8.1.0.RC5</jetty.version>
+        <archaius.version>0.5.11</archaius.version>
+        <fastjson.version>1.2.7</fastjson.version>
+        <hystrix.version>1.4.12</hystrix.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-metrics-event-stream</artifactId>
+            <version>${hystrix.version}</version>
+        </dependency>
+        <!-- <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version> </dependency> <dependency> <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId> <version>${jetty.version}</version>
+            </dependency> -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>8.1.14.v20131031</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>8.1.14.v20131031</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.netflix.archaius</groupId>
+            <artifactId>archaius-core</artifactId>
+            <version>${archaius.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <version>${hystrix.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+        <!--infoboard-->
+
+
+
+
+
         <!--json-lib-->
         <dependency>
             <groupId>net.sf.json-lib</groupId>
