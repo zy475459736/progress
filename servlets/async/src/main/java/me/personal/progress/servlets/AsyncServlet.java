@@ -6,11 +6,14 @@ import com.netflix.config.DynamicPropertyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.Context;
+import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -21,17 +24,17 @@ import java.util.concurrent.atomic.AtomicReference;
 public class AsyncServlet extends HttpServlet {
     private static Logger LOGGER = LoggerFactory.getLogger(AsyncServlet.class);
 
-    private DynamicIntProperty  asyncTimeout = DynamicPropertyFactory.getInstance().getIntProperty("ASYNC_TIMEOUT", 20000);
-    private DynamicIntProperty  coreSize     = DynamicPropertyFactory.getInstance().getIntProperty("CORE_SIZE", 200);
-    private DynamicIntProperty  maximumSize  = DynamicPropertyFactory.getInstance().getIntProperty("MAXIMUMSIZE", 2000);
-    private DynamicLongProperty aliveTime    = DynamicPropertyFactory.getInstance().getLongProperty("ALIVE_TIME", 1000 * 60 * 5);
+    private DynamicIntProperty asyncTimeout = DynamicPropertyFactory.getInstance().getIntProperty("ASYNC_TIMEOUT", 20000);
+    private DynamicIntProperty coreSize = DynamicPropertyFactory.getInstance().getIntProperty("CORE_SIZE", 200);
+    private DynamicIntProperty maximumSize = DynamicPropertyFactory.getInstance().getIntProperty("MAXIMUMSIZE", 2000);
+    private DynamicLongProperty aliveTime = DynamicPropertyFactory.getInstance().getLongProperty("ALIVE_TIME", 1000 * 60 * 5);
 
-    private AtomicReference<ThreadPoolExecutor> poolExecutorRef  = new AtomicReference<ThreadPoolExecutor>();
-    private AtomicLong                          rejectedRequests = new AtomicLong(0);
+    private AtomicReference<ThreadPoolExecutor> poolExecutorRef = new AtomicReference<ThreadPoolExecutor>();
+    private AtomicLong rejectedRequests = new AtomicLong(0);
 
     @Override
     public void init() throws ServletException {
-        System.out.println("hello world from AsyncServlet.init()");
+        LOGGER.info("hello world from AsyncServlet.init()");
         reNewThreadPool();
         Runnable c = new Runnable() {
             @Override
@@ -39,7 +42,7 @@ public class AsyncServlet extends HttpServlet {
                 ThreadPoolExecutor p = poolExecutorRef.get();
                 p.setCorePoolSize(coreSize.get());
                 p.setMaximumPoolSize(maximumSize.get());
-                p.setKeepAliveTime(aliveTime.get(),TimeUnit.MILLISECONDS);
+                p.setKeepAliveTime(aliveTime.get(), TimeUnit.MILLISECONDS);
             }
         };
         /**
@@ -49,32 +52,24 @@ public class AsyncServlet extends HttpServlet {
         maximumSize.addCallback(c);
         aliveTime.addCallback(c);
     }
+
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("hello world "+System.currentTimeMillis());
-        resp.getWriter().print("hello world "+System.currentTimeMillis());
-//        Transaction tran = Cat.getProducer().newTransaction("AsyncGateServlet", req.getRequestURL().toString());
-//        req.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
-//        //�첽���߼�
-//        AsyncContext asyncContext = req.startAsync();
-//        asyncContext.setTimeout(asyncTimeout.get());
-//        asyncContext.addListener(new AsyncGateListener());
-//        try {
-//            Context ctx = new CatContext();
-//            Cat.logRemoteCallClient(ctx);
-//            //GateCallable������ʱ���Է���һ��Object
-//            //CatContext,AsyncContext, gateRunner ,HttpServletRequest
+        LOGGER.info("hello world " + System.currentTimeMillis());
+        req.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
+
+        AsyncContext asyncContext = req.startAsync();
+        asyncContext.setTimeout(asyncTimeout.get());
+        asyncContext.addListener(new AsyncGateListener());
+        try {
 //            poolExecutorRef.get().submit(new GateCallable(ctx,asyncContext, gateRunner,req));
-//            tran.setStatus(Transaction.SUCCESS);
-//        } catch (RuntimeException e) {
-//            Cat.logError(e);
-//            tran.setStatus(e);
-//            rejectedRequests.incrementAndGet();
-//            throw e;
-//        }finally{
-//            tran.complete();
-//        }
+            poolExecutorRef.get().submit(new CallableImpl(asyncContext));
+        } catch (RuntimeException e) {
+            rejectedRequests.incrementAndGet();
+            throw e;
+        }
     }
+
     @Override
     public void destroy() {
         shutdownPoolExecutor(poolExecutorRef.get());
@@ -87,6 +82,7 @@ public class AsyncServlet extends HttpServlet {
             shutdownPoolExecutor(old);
         }
     }
+
     private void shutdownPoolExecutor(ThreadPoolExecutor old) {
         try {
             old.awaitTermination(5, TimeUnit.MINUTES);
@@ -95,8 +91,33 @@ public class AsyncServlet extends HttpServlet {
             old.shutdownNow();
             LOGGER.error("Shutdown Gate Thread Pool:", e);
         }
+
     }
 
+    static class CallableImpl implements Callable {
+//        private HttpServletResponse   resp;
+        private AsyncContext          asyctx;
+        public CallableImpl(AsyncContext asyctx){
+            this.asyctx = asyctx;
+        }
+
+        /**
+         * Computes a result, or throws an exception if unable to do so.
+         *
+         * @return computed result
+         * @throws Exception if unable to compute a result
+         */
+        @Override
+        public Object call() throws Exception {
+            try {
+                Thread.sleep(1);
+                asyctx.getResponse().getWriter().print("hello world " + System.currentTimeMillis());
+            } catch (Exception e) {
+                LOGGER.error("Error occurs inside the Callable.call.",e.toString());
+            }
+            return null;
+        }
+    }
 
 
 }
