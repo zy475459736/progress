@@ -6,17 +6,14 @@ import com.netflix.config.DynamicPropertyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.Context;
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -62,8 +59,7 @@ public class AsyncServlet extends HttpServlet {
         asyncContext.setTimeout(asyncTimeout.get());
         asyncContext.addListener(new AsyncGateListener());
         try {
-//            poolExecutorRef.get().submit(new GateCallable(ctx,asyncContext, gateRunner,req));
-            poolExecutorRef.get().submit(new CallableImpl(asyncContext));
+            Future future = poolExecutorRef.get().submit(new CallableImpl(asyncContext));
         } catch (RuntimeException e) {
             rejectedRequests.incrementAndGet();
             throw e;
@@ -76,8 +72,10 @@ public class AsyncServlet extends HttpServlet {
     }
 
     private void reNewThreadPool() {
+
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(coreSize.get(), maximumSize.get(), aliveTime.get(), TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
         ThreadPoolExecutor old = poolExecutorRef.getAndSet(poolExecutor);
+
         if (old != null) {
             shutdownPoolExecutor(old);
         }
@@ -95,25 +93,23 @@ public class AsyncServlet extends HttpServlet {
     }
 
     static class CallableImpl implements Callable {
-//        private HttpServletResponse   resp;
+
         private AsyncContext          asyctx;
         public CallableImpl(AsyncContext asyctx){
             this.asyctx = asyctx;
         }
-
-        /**
-         * Computes a result, or throws an exception if unable to do so.
-         *
-         * @return computed result
-         * @throws Exception if unable to compute a result
-         */
         @Override
         public Object call() throws Exception {
+            ServletResponse servletResponse;
             try {
-                Thread.sleep(1);
-                asyctx.getResponse().getWriter().print("hello world " + System.currentTimeMillis());
+                servletResponse = asyctx.getResponse();
+                servletResponse.setContentType("text/html");
+                servletResponse.getWriter().printf("hello world inside CallableImpl at " + System.currentTimeMillis()).flush();
+                servletResponse.getWriter().flush();
             } catch (Exception e) {
                 LOGGER.error("Error occurs inside the Callable.call.",e.toString());
+            }finally {
+                asyctx.complete();
             }
             return null;
         }
