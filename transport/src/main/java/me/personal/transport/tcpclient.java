@@ -1,4 +1,4 @@
-package me.personal.tcp;
+package me.personal.transport;
 
 import java.io.IOException;
 import java.io.OutputStream;
