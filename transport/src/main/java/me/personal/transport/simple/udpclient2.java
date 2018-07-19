@@ -1,4 +1,4 @@
-package me.personal.transport;
+package me.personal.transport.simple;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
