@@ -1,4 +1,4 @@
-package com.zhongyi.satan.servlet.listener;
+package me.personal.progress.servlet.listener;
 
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import javax.servlet.ServletRequestListener;
  * Created by zhongyi on 2017/12/14.
  */
 @Component
-public class RequestAttributeListener implements ServletRequestListener {
+public class ServletRequestListenerImpl implements ServletRequestListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent servletRequestEvent) {
