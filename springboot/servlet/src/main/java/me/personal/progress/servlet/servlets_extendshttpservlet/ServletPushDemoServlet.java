@@ -29,7 +29,7 @@ public class ServletPushDemoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PushBuilder pushBuilder = request.newPushBuilder();
-
+        //todo http2.0
         if (pushBuilder != null) {
             //We know the browser is going to need the image
             //so we push it before it even requests it.
