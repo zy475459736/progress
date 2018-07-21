@@ -1,4 +1,4 @@
-package com.zhongyi.satan.servlet.filter;
+package me.personal.progress.servlet.filter;
 
 import org.springframework.stereotype.Component;
 
@@ -20,18 +20,6 @@ public class SimpleFilter implements Filter {
                        ServletResponse servletResponse, FilterChain filterChain) throws
           IOException, ServletException {
     ServletContext servletContext = filterConfig.getServletContext();
-//    servletContext.log("Entering doFilter()");
-//    servletContext.log("initialization parameters: ");
-//    Enumeration<String> initParameterNames = filterConfig.
-//            getInitParameterNames();
-//    String parameterName;
-//    String parameterValue;
-//
-//    while (initParameterNames.hasMoreElements()) {
-//      parameterName = initParameterNames.nextElement();
-//      parameterValue = filterConfig.getInitParameter(parameterName);
-//      servletContext.log(parameterName + " = " + parameterValue);
-//    }
     System.out.println("**********");
     servletContext.log("Invoking servlet...");
     filterChain.doFilter(servletRequest, servletResponse);
@@ -44,3 +32,4 @@ public class SimpleFilter implements Filter {
     filterConfig = null;
   }
 }
+

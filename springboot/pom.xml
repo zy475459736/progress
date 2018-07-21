@@ -23,12 +23,6 @@
 
 
     <dependencies>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.0-b05</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- zhongyi.springboot 必备的Jar包 支持 Web 应用开发，包含 Tomcat 和 spring-mvc。 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
