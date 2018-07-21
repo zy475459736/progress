@@ -1,4 +1,4 @@
-package com.zhongyi.satan.servlet.servlets_withregistrationbean.servlets_withannotation;
+package me.personal.progress.servlet.servlets_extendshttpservlet;
 
 //import org.apache.catalina.servlet4preview.http.PushBuilder;
 
@@ -26,9 +26,8 @@ public class ServletPushDemoServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        System.out.println(ServletPushDemoServlet.class.getSimpleName());
         PushBuilder pushBuilder = request.newPushBuilder();
 
         if (pushBuilder != null) {
