@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @WebServlet(name = "SyncServlet", urlPatterns = {"/sync"})
 public class SyncServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(SyncServlet.class);
-
+    //todo 典型的bug，servlet service并不是线程安全的.
     private static final AtomicInteger atomicCount = new AtomicInteger(0);
 
     @Autowired
@@ -30,7 +30,7 @@ public class SyncServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("Get the "+ atomicCount.incrementAndGet() + "request. Service() Begin");
+        logger.info("Get the "+ atomicCount.incrementAndGet() + " sync request.Service() Begin");
         long startTime = System.currentTimeMillis();
 
         PrintWriter printWriter = resp.getWriter();
@@ -50,7 +50,7 @@ public class SyncServlet extends HttpServlet {
         printWriter.close();
 
         long endTime   = System.currentTimeMillis();
-        logger.info("Get the "+ atomicCount.get() + "request. Service() end.The duration:"+(endTime - startTime));
+        logger.info("Get the "+ atomicCount.get() + " sync request.Service() end.The duration:"+(endTime - startTime)+"s");
     }
 
     @Override

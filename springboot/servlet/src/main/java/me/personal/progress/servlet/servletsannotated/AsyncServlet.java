@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @WebServlet(name = "AsyncServlet", urlPatterns = {"/async"},asyncSupported = true)
 public class AsyncServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(AsyncServlet.class);
-
+    //todo 典型的bug，servlet service并不是线程安全的.
     private static final AtomicInteger      atomicCount  = new AtomicInteger(0);
     private static final ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(
             200, 1000, 1000 * 60 * 5, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>());
@@ -40,7 +40,7 @@ public class AsyncServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("Get the "+ atomicCount.incrementAndGet() + "request. Service() Begin");
+        logger.info("Get the "+ atomicCount.incrementAndGet() + " async request.Service() Begin");
         long startTime = System.currentTimeMillis();
 
         AsyncContext asyncContext = req.startAsync();
@@ -91,7 +91,7 @@ public class AsyncServlet extends HttpServlet {
         });
 
         long endTime   = System.currentTimeMillis();
-        logger.info("Get the "+ atomicCount.get() + "request. Service() end.The duration:"+(endTime - startTime));
+        logger.info("Get the "+ atomicCount.get() + " async request.Service() end.The duration:"+(endTime - startTime)+"s");
     }
 
     @Override
