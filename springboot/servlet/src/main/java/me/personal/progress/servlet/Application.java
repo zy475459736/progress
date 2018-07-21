@@ -1,18 +1,18 @@
-package com.zhongyi.satan.servlet;
+package me.personal.progress.servlet;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.web.servlet.DispatcherServlet;
 
 /**
  * Created by zhongyi on 2017/12/14.
  */
-@ServletComponentScan
+@ServletComponentScan(basePackages = "me.personal.progress.servlet.servletsannotated")
 @SpringBootApplication
-public class AppTest {
+public class Application {
+
     public static void main(String[] args) {
-        SpringApplication.run(com.zhongyi.satan.servlet.AppTest.class, args);
-        DispatcherServlet dispatcherServlet;
+        SpringApplication.run(Application.class, args);
     }
+
 }
