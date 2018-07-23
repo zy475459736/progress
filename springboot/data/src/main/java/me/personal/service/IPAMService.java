@@ -6,10 +6,16 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
+import me.personal.common.BaseException;
+import me.personal.common.IPState;
+import me.personal.common.MessageType;
+import me.personal.common.PageResult;
 import me.personal.dao.IPRepository;
 import me.personal.dao.SubnetRepository;
 import me.personal.entity.IPEntity;
+import me.personal.entity.IPVO;
 import me.personal.entity.SubnetEntity;
+import me.personal.entity.SubnetVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +25,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import utils.util.IPUtil;
 
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
@@ -38,7 +45,7 @@ public class IPAMService {
 	        .expireAfterWrite(10, TimeUnit.MINUTES)	
 	        .build(
 	            new CacheLoader<String, Optional<IPEntity>>() {
-
+                    @Override
 	                public Optional<IPEntity> load(String ip) {
 	                	IPEntity entity = ipRepository.findByIp(ip);
 	                	return Optional.fromNullable(entity);
