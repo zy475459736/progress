@@ -1,4 +1,4 @@
-package threadlocal;
+package me.personal.concurrency.threadlocal;
 
 /**
  * Created by zhongyi on 2018/7/19.
