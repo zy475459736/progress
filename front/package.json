@@ -1,0 +1,14 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "webpack": "^4.16.4"
+  },
+  "scripts": {
+    "start":"webpack"
+  },
+  "author": "",
+  "license": "ISC"
+}
