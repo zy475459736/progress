@@ -1,4 +1,4 @@
-package com.zhongyi.satan.mvc.controller;
+package me.personal.progress.springboot.mvc.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

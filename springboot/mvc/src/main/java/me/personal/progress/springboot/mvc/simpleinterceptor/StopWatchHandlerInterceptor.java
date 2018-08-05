@@ -1,4 +1,4 @@
-package com.zhongyi.satan.mvc.simpleinterceptor;
+package me.personal.progress.springboot.mvc.simpleinterceptor;
 
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
