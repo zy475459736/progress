@@ -53,13 +53,13 @@ public class AsyncServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LOGGER.info("hello world " + System.currentTimeMillis());
-        req.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
+//        req.setAttribute("org.apache.catalina.ASYNC_SUPPORTED", true);
 
         AsyncContext asyncContext = req.startAsync();
         asyncContext.setTimeout(asyncTimeout.get());
         asyncContext.addListener(new AsyncGateListener());
         try {
-            Future future = poolExecutorRef.get().submit(new CallableImpl(asyncContext));
+            poolExecutorRef.get().submit(new CallableImpl(asyncContext));
         } catch (RuntimeException e) {
             rejectedRequests.incrementAndGet();
             throw e;
@@ -102,6 +102,7 @@ public class AsyncServlet extends HttpServlet {
         public Object call() throws Exception {
             ServletResponse servletResponse;
             try {
+                Thread.sleep(500);
                 servletResponse = asyctx.getResponse();
                 servletResponse.setContentType("text/html");
                 servletResponse.getWriter().printf("hello world inside CallableImpl at " + System.currentTimeMillis()).flush();

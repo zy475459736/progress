@@ -1,7 +1,7 @@
 package me.personal.entity;
 
 import me.personal.common.IPState;
-import utils.util.TimeUtil;
+import me.personal.skills.util.TimeUtil;
 
 /**
  * Created by zhongyi on 2018/7/23.

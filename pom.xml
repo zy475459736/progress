@@ -16,6 +16,7 @@
         <module>multithread</module>
         <module>servlets</module>
         <module>utils</module>
+        <module>transport</module>
     </modules>
 
     <packaging>pom</packaging>
