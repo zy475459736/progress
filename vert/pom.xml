@@ -11,4 +11,7 @@
 
     <artifactId>vert</artifactId>
 <packaging>pom</packaging>
+    <modules>
+        <module>test2</module>
+    </modules>
 </project>
