@@ -10,8 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class HelloWorldCommand2 extends HystrixCommand<String> {
     private final String name;
     public HelloWorldCommand2(String name) {
-        super(HystrixCommand.Setter
-                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("HelloWorldGroup2"))
+        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("HelloWorldGroup2"))
                 /* 配置依赖超时时间,500毫秒*/
                 .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionIsolationThreadTimeoutInMilliseconds(500)));
         this.name = name;
