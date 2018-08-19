@@ -1,4 +1,4 @@
-package me.personal.progress.proxy_s;
+package me.personal.progress.proxy_static;
 
 import me.personal.progress.AbstractObject;
 

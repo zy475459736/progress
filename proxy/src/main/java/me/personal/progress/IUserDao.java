@@ -6,4 +6,5 @@ package me.personal.progress;
 public interface IUserDao {
 
     public void save();
+    public void save_();
 }
