@@ -17,6 +17,8 @@
         <module>servlets</module>
         <module>utils</module>
         <module>transport</module>
+        <module>vert/test1</module>
+        <module>proxy</module>
     </modules>
 
     <packaging>pom</packaging>
