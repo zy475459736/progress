@@ -15,6 +15,8 @@
     <modules>
         <module>singleton</module>
         <module>proxy</module>
+        <module>factory</module>
+        <module>strategy</module>
     </modules>
 
 
