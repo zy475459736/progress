@@ -19,6 +19,7 @@
         <module>transport</module>
         <module>vert/test1</module>
         <module>proxy</module>
+        <module>io</module>
     </modules>
 
     <packaging>pom</packaging>
