@@ -6,50 +6,31 @@ import java.net.Socket;
 
 public class BasicServer implements Runnable{
 
-    private static final int PORT = 8082;
-    private static volatile int num = 0;
-
-    public static void main(String[] args) {
-        new Thread(new BasicServer())
-                .start();
-    }
-
-    BasicServer(){
-        System.out.println("Basic Server started successfully.");
-    }
-
     @Override
     public void run() {
         try{
             ServerSocket serverSocket = new ServerSocket(PORT);
             while(!Thread.interrupted()){
-                new Thread(new Handler(serverSocket.accept()))
-                        .start();
+                new Thread(new Handler(serverSocket.accept())).start();
             }
-        }catch (IOException e){
-            System.out.println("IOException handled."+e.toString());
-        }
+        }catch (IOException e){System.out.println("IOException handled."+e.toString());}
     }
 
-
-
     static class Handler implements Runnable{
-
         final Socket socket ;
         Handler(Socket socket){
             this.socket = socket;
         }
         @Override
         public void run() {
-            byte[] input = new byte[1024];
-
+            byte[] input = new byte[MAX_INPUT];
             try {
-                socket.getInputStream().read(input);
-                byte[] output = process(input);
-
-                socket.getOutputStream().write(output);
-
+                Thread thread;
+                socket.getInputStream().read(input);//read
+                byte[] output = process(input);//业务逻辑
+                socket.getOutputStream().write(output);//write
                 socket.getOutputStream().flush();
+                socket.getOutputStream().close();
             } catch (IOException e) {
                 e.printStackTrace();
             }finally {
@@ -67,6 +48,19 @@ public class BasicServer implements Runnable{
             return result.getBytes();
         }
     }
+
+
+    BasicServer(){
+        System.out.println("Basic Server started successfully.");
+    }
+
+    public static void main(String[] args) {
+        new Thread(new BasicServer())
+                .start();
+    }
+    private static final int PORT = 8082;
+    private static final int MAX_INPUT =1024;
+    private static volatile int num = 0;
 
 }
 
