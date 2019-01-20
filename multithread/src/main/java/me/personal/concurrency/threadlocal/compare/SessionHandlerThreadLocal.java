@@ -56,10 +56,10 @@ public class SessionHandlerThreadLocal {
     public static void main(String[] args) {
         new Thread(() -> {
             SessionHandlerThreadLocal handler = new SessionHandlerThreadLocal();
-            handler.getStatus();
-            handler.getUser();
-            handler.setStatus("close");
-            handler.getStatus();
+            System.out.println(handler.getStatus());;
+            System.out.println(handler.getUser());;handler.setStatus("close");
+            System.out.println(handler.getStatus());;
+            ;
         }).start();
     }
 }
